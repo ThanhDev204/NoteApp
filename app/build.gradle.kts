@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.example.noteapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.noteapp"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -40,4 +40,20 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+
+    // Room for database (Kotlin version)
+    implementation("androidx.room:room-runtime:2.2.5")
+    annotationProcessor("androidx.room:room-compiler:2.2.5") // Kotlin dùng kapt thay vì annotationProcessor
+
+    // RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.1.0")
+    //Scalable size unit (support different screen sizes)
+    implementation("com.intuit.sdp:sdp-android:1.0.6")
+    implementation("com.intuit.ssp:ssp-android:1.0.6")
+    //Material Design
+    implementation("com.google.android.material:material:1.12.0")
+    //Rounded ImageView
+    implementation("com.makeramen:roundedimageview:2.3.0")
+
 }
