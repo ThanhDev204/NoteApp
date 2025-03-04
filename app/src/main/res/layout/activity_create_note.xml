@@ -29,9 +29,9 @@
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/ic_keyboard_arrow_left"
-                android:tint="@color/colorIcons"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/colorIcons" />
 
             <ImageView
                 android:id="@+id/imgSave"
@@ -42,10 +42,10 @@
                 android:contentDescription="@string/app_name"
                 android:padding="@dimen/_3sdp"
                 android:src="@drawable/baseline_done_24"
-                android:tint="@color/colorIcons"
                 app:layout_constraintBottom_toBottomOf="@id/imgBack"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/imgBack" />
+                app:layout_constraintTop_toTopOf="@id/imgBack"
+                app:tint="@color/colorIcons" />
 
             <EditText
                 android:id="@+id/inputNoteTitle"
