@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">NoteApp</string>
+    <string name="miscellaneous">Miscellaneous</string>
+    <string name="pick_color">Pick Color</string>
+    <string name="type_note_here">Type note here...</string>
+    <string name="note_subtitle">Note Subtitle</string>
+    <string name="note_title">Note Title</string>
 </resources>

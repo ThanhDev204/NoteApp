@@ -55,7 +55,7 @@
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@null"
                 android:fontFamily="@font/ubuntu_bold"
-                android:hint="Note Title"
+                android:hint="@string/note_title"
                 android:imeOptions="actionDone"
                 android:importantForAutofill="no"
                 android:includeFontPadding="false"
@@ -86,7 +86,7 @@
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@null"
                 android:fontFamily="@font/ubuntu_medium"
-                android:hint="Note Subtitle"
+                android:hint="@string/note_subtitle"
                 android:importantForAutofill="no"
                 android:includeFontPadding="false"
                 android:inputType="textMultiLine"
@@ -120,7 +120,7 @@
                 android:background="@null"
                 android:fontFamily="@font/ubuntu_regular"
                 android:gravity="top"
-                android:hint="Type note here..."
+                android:hint="@string/type_note_here"
                 android:importantForAutofill="no"
                 android:includeFontPadding="false"
                 android:inputType="textMultiLine"
@@ -133,4 +133,6 @@
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <include layout="@layout/layout_miscellaneous"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
