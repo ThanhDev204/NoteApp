@@ -76,6 +76,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             }
             textDateTime.setText(note.getDateTime());
 
+            GradientDrawable gradientDrawable = (GradientDrawable) layoutNote.getBackground();
+            if (note.getColor() != null) {
+                gradientDrawable.setColor(Color.parseColor(note.getColor()));
+            } else {
+                gradientDrawable.setColor(Color.parseColor("#333333"));
+            }
+
             // Kiểm tra và sửa đường dẫn nếu chỉ có tên file
             String imagePath = note.getImagePath();
             if (imagePath != null && !imagePath.trim().isEmpty()) {

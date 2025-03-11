@@ -8,4 +8,8 @@
     <string name="my_notes">My Notes</string>
     <string name="search_notes">Search notes</string>
     <string name="add_image">Add Image</string>
+    <string name="add_url">Add Url</string>
+    <string name="enter_url">Enter Url</string>
+    <string name="add">ADD</string>
+    <string name="cancel_dialog">CANCEL</string>
 </resources>
