@@ -35,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.noteapp.R;
 import com.example.noteapp.database.NotesDatabase;
 import com.example.noteapp.entities.Note;
@@ -57,6 +58,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int REQUEST_CODE_SELECT_IMAGE = 2;
     private AlertDialog dialogUrl;
+    private Note alreadyAvailableNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +95,35 @@ public class CreateNoteActivity extends AppCompatActivity {
         });
         selectedNoteColor = "#333333";
         selectedImagePath = "";
+        if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
+            alreadyAvailableNote = (Note) getIntent().getSerializableExtra("note");
+            setViewOrUpdateNote();
+        }
         initMiscellaneous();
         setSubtitleIndicatorColor();
+    }
+
+    private void setViewOrUpdateNote() {
+        inputNoteTitle.setText(alreadyAvailableNote.getTitle());
+        inputNoteSubtitle.setText(alreadyAvailableNote.getSubtitle());
+        inputNoteText.setText(alreadyAvailableNote.getNoteText());
+        txtDateTime.setText(alreadyAvailableNote.getDateTime());
+        if (alreadyAvailableNote.getImagePath() != null && !alreadyAvailableNote.getImagePath().trim().isEmpty()) {
+            imageNote.setVisibility(View.VISIBLE);
+
+            // Sử dụng Glide để tải ảnh nhanh hơn và tránh crash app
+            Glide.with(this)
+                    .load(alreadyAvailableNote.getImagePath())
+                    .placeholder(R.drawable.ic_image) // Ảnh hiển thị trong lúc tải
+                    .error(R.drawable.baseline_error_24) // Ảnh hiển thị nếu có lỗi
+                    .into(imageNote);
+        } else {
+            imageNote.setVisibility(View.GONE);
+        }
+        if(alreadyAvailableNote.getWebLink() !=null && !alreadyAvailableNote.getWebLink().trim().isEmpty()){
+            txtWebUrl.setText(alreadyAvailableNote.getWebLink());
+            layoutWebUrl.setVisibility(View.VISIBLE);
+        }
     }
 
     private void saveNote() {
@@ -112,8 +141,12 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setDateTime(txtDateTime.getText().toString());
         note.setColor(selectedNoteColor);
         note.setImagePath(selectedImagePath);
-        if(layoutWebUrl.getVisibility() == View.VISIBLE){
+        if (layoutWebUrl.getVisibility() == View.VISIBLE) {
             note.setWebLink(txtWebUrl.getText().toString());
+        }
+
+        if(alreadyAvailableNote!=null){
+            note.setId(alreadyAvailableNote.getId());
         }
 
         @SuppressLint("StaticFieldLeak")
@@ -129,7 +162,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             protected void onPostExecute(Void unused) {
                 super.onPostExecute(unused);
                 Log.d("zzzzzzzzzzzzzzzzzzz", "Lưu note thành công! Kết thúc Activity.");
-                Log.d("zzzzzzzzzzzzzzzzzzz","Image:"+note.getImagePath());
+                Log.d("zzzzzzzzzzzzzzzzzzz", "Image:" + note.getImagePath());
                 Intent intent = new Intent();
                 setResult(RESULT_OK, intent);
                 finish();
@@ -219,6 +252,23 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        if(alreadyAvailableNote !=null && alreadyAvailableNote.getColor()!=null && alreadyAvailableNote.getColor().trim().isEmpty()){
+            switch (alreadyAvailableNote.getColor()){
+                case "#fdbe3b":
+                    layoutMiscellaneous.findViewById(R.id.viewColor2).performClick();
+                    break;
+                case "#f44842":
+                    layoutMiscellaneous.findViewById(R.id.viewColor3).performClick();
+                    break;
+                case "#3a52fc":
+                    layoutMiscellaneous.findViewById(R.id.viewColor4).performClick();
+                    break;
+                case "#000000":
+                    layoutMiscellaneous.findViewById(R.id.viewColor5).performClick();
+                    break;
+            }
+        }
+
         layoutMiscellaneous.findViewById(R.id.layoutAddImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -266,7 +316,6 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -280,7 +329,6 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
     @Override
@@ -350,15 +398,16 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         return filePath;
     }
-    private void showAddUrlDialog(){
-        if(dialogUrl==null){
+
+    private void showAddUrlDialog() {
+        if (dialogUrl == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
             View view = LayoutInflater.from(this).inflate(
-                    R.layout.layout_add_url,(ViewGroup) findViewById(R.id.layoutAddUrlContainer)
+                    R.layout.layout_add_url, (ViewGroup) findViewById(R.id.layoutAddUrlContainer)
             );
             builder.setView(view);
             dialogUrl = builder.create();
-            if(dialogUrl.getWindow()!=null){
+            if (dialogUrl.getWindow() != null) {
                 dialogUrl.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
             final EditText inputUrl = view.findViewById(R.id.inputUrl);
@@ -366,11 +415,11 @@ public class CreateNoteActivity extends AppCompatActivity {
             view.findViewById(R.id.txtAdd).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(inputUrl.getText().toString().trim().isEmpty()){
+                    if (inputUrl.getText().toString().trim().isEmpty()) {
                         Toast.makeText(CreateNoteActivity.this, "Enter Url", Toast.LENGTH_SHORT).show();
                     } else if (!Patterns.WEB_URL.matcher(inputUrl.getText().toString()).matches()) {
                         Toast.makeText(CreateNoteActivity.this, "Enter valid URL", Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         txtWebUrl.setText(inputUrl.getText().toString());
                         layoutWebUrl.setVisibility(View.VISIBLE);
                         dialogUrl.dismiss();
