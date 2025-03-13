@@ -99,6 +99,23 @@ public class CreateNoteActivity extends AppCompatActivity {
             alreadyAvailableNote = (Note) getIntent().getSerializableExtra("note");
             setViewOrUpdateNote();
         }
+
+        findViewById(R.id.imageRemoveWebUrl).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                txtWebUrl.setText(null);
+                layoutWebUrl.setVisibility(View.GONE);
+            }
+        });
+        findViewById(R.id.imageRemoveImage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imageNote.setImageBitmap(null);
+                imageNote.setVisibility(View.GONE);
+                findViewById(R.id.imageRemoveImage).setVisibility(View.GONE);
+                selectedImagePath = "";
+            }
+        });
         initMiscellaneous();
         setSubtitleIndicatorColor();
     }
@@ -110,7 +127,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         txtDateTime.setText(alreadyAvailableNote.getDateTime());
         if (alreadyAvailableNote.getImagePath() != null && !alreadyAvailableNote.getImagePath().trim().isEmpty()) {
             imageNote.setVisibility(View.VISIBLE);
-
+            findViewById(R.id.imageRemoveImage).setVisibility(View.VISIBLE);
             // Sử dụng Glide để tải ảnh nhanh hơn và tránh crash app
             Glide.with(this)
                     .load(alreadyAvailableNote.getImagePath())
@@ -120,7 +137,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         } else {
             imageNote.setVisibility(View.GONE);
         }
-        if(alreadyAvailableNote.getWebLink() !=null && !alreadyAvailableNote.getWebLink().trim().isEmpty()){
+        if (alreadyAvailableNote.getWebLink() != null && !alreadyAvailableNote.getWebLink().trim().isEmpty()) {
             txtWebUrl.setText(alreadyAvailableNote.getWebLink());
             layoutWebUrl.setVisibility(View.VISIBLE);
         }
@@ -145,7 +162,7 @@ public class CreateNoteActivity extends AppCompatActivity {
             note.setWebLink(txtWebUrl.getText().toString());
         }
 
-        if(alreadyAvailableNote!=null){
+        if (alreadyAvailableNote != null) {
             note.setId(alreadyAvailableNote.getId());
         }
 
@@ -252,8 +269,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
-        if(alreadyAvailableNote !=null && alreadyAvailableNote.getColor()!=null && alreadyAvailableNote.getColor().trim().isEmpty()){
-            switch (alreadyAvailableNote.getColor()){
+        if (alreadyAvailableNote != null && alreadyAvailableNote.getColor() != null && alreadyAvailableNote.getColor().trim().isEmpty()) {
+            switch (alreadyAvailableNote.getColor()) {
                 case "#fdbe3b":
                     layoutMiscellaneous.findViewById(R.id.viewColor2).performClick();
                     break;
@@ -347,7 +364,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         imageNote.setImageBitmap(bitmap);
                         imageNote.setVisibility(View.VISIBLE);
-
+                        findViewById(R.id.imageRemoveImage).setVisibility(View.VISIBLE);
                         // Cập nhật đường dẫn ảnh
                         selectedImagePath = getRealPathFromURI(this, selectedImageUri);
 
