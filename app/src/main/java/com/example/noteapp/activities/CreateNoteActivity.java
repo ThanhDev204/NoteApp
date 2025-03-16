@@ -59,6 +59,7 @@ public class CreateNoteActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SELECT_IMAGE = 2;
     private AlertDialog dialogUrl;
     private Note alreadyAvailableNote;
+    private AlertDialog dialogDeleteNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -311,6 +312,65 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        if (alreadyAvailableNote != null) {
+            layoutMiscellaneous.findViewById(R.id.layoutDeleteNote).setVisibility(View.VISIBLE);
+            layoutMiscellaneous.findViewById(R.id.layoutDeleteNote).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    showDeleteNoteDialog();
+                }
+            });
+        }
+
+    }
+
+    private void showDeleteNoteDialog() {
+
+        if (dialogDeleteNote == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(CreateNoteActivity.this);
+            View view = LayoutInflater.from(this).inflate(R.layout.layout_delete_note,
+                    (ViewGroup) findViewById(R.id.layoutDeleteNoteContainer)
+            );
+            builder.setView(view);
+            dialogDeleteNote = builder.create();
+            if (dialogDeleteNote.getWindow() != null) {
+                dialogDeleteNote.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+            view.findViewById(R.id.txtDeleteNote).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    @SuppressLint("StaticFieldLeak")
+                    class DeleteNoteTask extends AsyncTask<Void, Void, Void> {
+
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+                            NotesDatabase.getNotesDatabase(getApplicationContext()).noteDao().deleteNote(alreadyAvailableNote);
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void unused) {
+                            super.onPostExecute(unused);
+                            Intent intent = new Intent();
+                            intent.putExtra("isNoteDeleted", true);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                            Toast.makeText(CreateNoteActivity.this, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    new DeleteNoteTask().execute();
+                }
+            });
+            view.findViewById(R.id.txtCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogDeleteNote.dismiss();
+                    Toast.makeText(CreateNoteActivity.this, "Cancel Deleted Note", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        dialogDeleteNote.show();
     }
 
     private void setSubtitleIndicatorColor() {
@@ -451,6 +511,14 @@ public class CreateNoteActivity extends AppCompatActivity {
             });
         }
         dialogUrl.show();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dialogDeleteNote != null && dialogDeleteNote.isShowing()) {
+            dialogDeleteNote.dismiss();
+            dialogDeleteNote = null;
+        }
     }
 
 
